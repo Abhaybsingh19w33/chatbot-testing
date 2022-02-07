@@ -225,9 +225,15 @@ for length in range(1, 25 + 1):
 
 
 ########## PART 2 - BUILDING THE SEQ2SEQ MODEL ##########
+print("#################################################")
+print("########## PART 2 - BUILDING THE SEQ2SEQ MODEL ##########")
+print("#################################################\n")
 
 
 # Creating placeholders for the inputs and the targets
+print("#################################################")
+print("# Creating placeholders for the inputs and the targets")
+print("#################################################\n")
 def model_inputs():
     inputs = tf.placeholder(tf.int32, [None, None], name='input')
     targets = tf.placeholder(tf.int32, [None, None], name='target')
@@ -236,6 +242,9 @@ def model_inputs():
     return inputs, targets, lr, keep_prob
 
 # Preprocessing the targets
+print("#################################################")
+print("# Preprocessing the targets")
+print("#################################################\n")
 
 
 def preprocess_targets(targets, word2int, batch_size):
@@ -245,6 +254,9 @@ def preprocess_targets(targets, word2int, batch_size):
     return preprocessed_targets
 
 # Creating the Encoder RNN
+print("#################################################")
+print("# Creating the Encoder RNN")
+print("#################################################\n")
 
 
 def encoder_rnn(rnn_inputs, rnn_size, num_layers, keep_prob, sequence_length):
@@ -260,6 +272,9 @@ def encoder_rnn(rnn_inputs, rnn_size, num_layers, keep_prob, sequence_length):
     return encoder_state
 
 # Decoding the training set
+print("#################################################")
+print("# Decoding the training set")
+print("#################################################\n")
 
 
 def decode_training_set(encoder_state, decoder_cell, decoder_embedded_input, sequence_length, decoding_scope, output_function, keep_prob, batch_size):
@@ -281,6 +296,9 @@ def decode_training_set(encoder_state, decoder_cell, decoder_embedded_input, seq
     return output_function(decoder_output_dropout)
 
 # Decoding the test/validation set
+print("#################################################")
+print("# Decoding the test/validation set")
+print("#################################################\n")
 
 
 def decode_test_set(encoder_state, decoder_cell, decoder_embeddings_matrix, sos_id, eos_id, maximum_length, num_words, decoding_scope, output_function, keep_prob, batch_size):
@@ -305,6 +323,9 @@ def decode_test_set(encoder_state, decoder_cell, decoder_embeddings_matrix, sos_
     return test_predictions
 
 # Creating the Decoder RNN
+print("#################################################")
+print("# Creating the Decoder RNN")
+print("#################################################\n")
 
 
 def decoder_rnn(decoder_embedded_input, decoder_embeddings_matrix, encoder_state, num_words, sequence_length, rnn_size, num_layers, word2int, keep_prob, batch_size):
@@ -345,6 +366,9 @@ def decoder_rnn(decoder_embedded_input, decoder_embeddings_matrix, encoder_state
     return training_predictions, test_predictions
 
 # Building the seq2seq model
+print("#################################################")
+print("# Building the seq2seq model")
+print("#################################################\n")
 
 
 def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length, answers_num_words, questions_num_words, encoder_embedding_size, decoder_embedding_size, rnn_size, num_layers, questionswords2int):
@@ -374,9 +398,15 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length, answe
 
 
 ########## PART 3 - TRAINING THE SEQ2SEQ MODEL ##########
+print("#################################################")
+print("########## PART 3 - TRAINING THE SEQ2SEQ MODEL ##########")
+print("#################################################\n")
 
 
 # Setting the Hyperparameters
+print("#################################################")
+print("# Setting the Hyperparameters")
+print("#################################################\n")
 epochs = 100
 # epochs = 1
 batch_size = 32
@@ -390,19 +420,34 @@ min_learning_rate = 0.0001
 keep_probability = 0.5
 
 # Defining a session
+print("#################################################")
+print("# Defining a session")
+print("#################################################\n")
 tf.reset_default_graph()
 session = tf.InteractiveSession()
 
 # Loading the model inputs
+print("#################################################")
+print("# Loading the model inputs")
+print("#################################################\n")
 inputs, targets, lr, keep_prob = model_inputs()
 
 # Setting the sequence length
+print("#################################################")
+print("# Setting the sequence length")
+print("#################################################\n")
 sequence_length = tf.placeholder_with_default(25, None, name='sequence_length')
 
 # Getting the shape of the inputs tensor
+print("#################################################")
+print("# Getting the shape of the inputs tensor")
+print("#################################################\n")
 input_shape = tf.shape(inputs)
 
 # Getting the training and test predictions
+print("#################################################")
+print("# Getting the training and test predictions")
+print("#################################################\n")
 training_predictions, test_predictions = seq2seq_model(tf.reverse(inputs, [-1]),
                                                        targets,
                                                        keep_prob,
@@ -417,6 +462,9 @@ training_predictions, test_predictions = seq2seq_model(tf.reverse(inputs, [-1]),
                                                        questionswords2int)
 
 # Setting up the Loss Error, the Optimizer and Gradient Clipping
+print("#################################################")
+print("# Setting up the Loss Error, the Optimizer and Gradient Clipping")
+print("#################################################\n")
 with tf.name_scope("optimization"):
     loss_error = tf.contrib.seq2seq.sequence_loss(training_predictions,
                                                   targets,
@@ -428,6 +476,9 @@ with tf.name_scope("optimization"):
     optimizer_gradient_clipping = optimizer.apply_gradients(clipped_gradients)
 
 # Padding the sequences with the <PAD> token
+print("#################################################")
+print("# Padding the sequences with the <PAD> token")
+print("#################################################\n")
 
 
 def apply_padding(batch_of_sequences, word2int):
@@ -436,6 +487,9 @@ def apply_padding(batch_of_sequences, word2int):
     return [sequence + [word2int['<PAD>']] * (max_sequence_length - len(sequence)) for sequence in batch_of_sequences]
 
 # Splitting the data into batches of questions and answers
+print("#################################################")
+print("# Splitting the data into batches of questions and answers")
+print("#################################################\n")
 
 
 def split_into_batches(questions, answers, batch_size):
@@ -451,22 +505,28 @@ def split_into_batches(questions, answers, batch_size):
 
 
 # Splitting the questions and answers into training and validation sets
-# training_validation_split = int(len(sorted_clean_questions) * 0.15)
+print("#################################################")
+print("# Splitting the questions and answers into training and validation sets")
+print("#################################################\n")
+training_validation_split = int(len(sorted_clean_questions) * 0.15)
 # training_validation_split = 5000
 # print("training_validation_split", training_validation_split)
-# training_questions = sorted_clean_questions[training_validation_split:]
-training_questions = sorted_clean_questions[0:10000]
+training_questions = sorted_clean_questions[training_validation_split:]
+# training_questions = sorted_clean_questions[0:10000]
 # print("training_questions", len(training_questions))
-# training_answers = sorted_clean_answers[training_validation_split:]
-training_answers = sorted_clean_answers[0:10000]
-# validation_questions = sorted_clean_questions[:training_validation_split]
-validation_questions = sorted_clean_questions[10001:15000]
+training_answers = sorted_clean_answers[training_validation_split:]
+# training_answers = sorted_clean_answers[0:10000]
+validation_questions = sorted_clean_questions[:training_validation_split]
+# validation_questions = sorted_clean_questions[10001:15000]
 # print("validation_questions", len(validation_questions))
-# validation_answers = sorted_clean_answers[:training_validation_split]
-validation_answers = sorted_clean_answers[10001:15000]
+validation_answers = sorted_clean_answers[:training_validation_split]
+# validation_answers = sorted_clean_answers[10001:15000]
 
 
 # Training
+print("#################################################")
+print("# Training")
+print("#################################################\n")
 batch_index_check_training_loss = 100
 batch_index_check_validation_loss = ((len(training_questions)) // batch_size // 2) - 1
 total_training_loss_error = 0
@@ -534,9 +594,15 @@ print("Game Over")
 
 
 ########## PART 4 - TESTING THE SEQ2SEQ MODEL ##########
+print("#################################################")
+print("########## PART 4 - TESTING THE SEQ2SEQ MODEL ##########")
+print("#################################################\n")
 
 
 # Loading the weights and Running the session
+print("#################################################")
+print("# Loading the weights and Running the session")
+print("#################################################\n")
 # checkpoint = "./chatbot_weights.ckpt"
 checkpoint = "./chatbot_weights9.ckpt"
 # checkpoint = temp_check
@@ -546,11 +612,17 @@ saver = tf.train.Saver()
 saver.restore(session, checkpoint)
 
 # Converting the questions from strings to lists of encoding integers
+print("#################################################")
+print("# Converting the questions from strings to lists of encoding integers")
+print("#################################################\n")
 def convert_string2int(question, word2int):
     question = clean_text(question)
     return [word2int.get(word, word2int['<OUT>']) for word in question.split()]
 
 # Setting up the chat
+print("#################################################")
+print("# Setting up the chat")
+print("#################################################\n")
 while(True):
     question = input("You: ")
     if question == 'Goodbye' or question == 'goodbye' or question == 'exit':
